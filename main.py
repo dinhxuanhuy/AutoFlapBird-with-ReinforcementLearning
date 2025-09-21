@@ -2,44 +2,58 @@ import pygame
 from sys import exit
 import config
 import components
-import population
-import player
+import random
+
+
+
 pygame.init()
-bird = player.Player()
 clock = pygame.time.Clock()
-def generate_pipe():
-    config.pipes.append(components.Pipes(config.win_width))
 
 def quit_game():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            config.agent.terminate_game()
             pygame.quit()
             exit()
 def main():
-    pipe_spawn_timer = 10
+    pipe_spawn_time = 10
     while True:
         quit_game()
         config.window.fill((0, 0, 0))
+        config.background.draw(config.window)
         clock.tick(60)
+
+        # spawn pipe
+        if pipe_spawn_time == 0:
+            config.generate_pipe()
+            pipe_spawn_time = 100
+        pipe_spawn_time -= 1
+
+        # update & draw pipes
+        for pipe in config.pipes:
+            pipe.draw(config.window)
+            pipe.update()
+            if pipe.offscreen:
+                config.pipes.remove(pipe)
+
+        # autoplay: cho agent quyết định
+        if config.player.alive:
+            config.player.think()   # AI hành động (flap hay không)
+            config.player.update()
+            config.player.draw(config.window)
+        else:
+            # game over -> cập nhật Q-learning
+            print("Score:", config.player.score)
+            config.agent.update_scores(died=True, printLogs=True)
+            # reset
+            config.pipes = []
+            pipe_spawn_time = 10
+            config.player = config.create_player()
+
+        # draw ground
         config.ground.draw(config.window)
-        if pipe_spawn_timer <= 0:
-            generate_pipe()
-            pipe_spawn_timer = 200
-        pipe_spawn_timer -= 1
-        for p in config.pipes:
-            p.draw(config.window)
-            p.update()
-            if p.off_screen:
-                config.pipes.remove(p)
-        if bird.alive:
-            #read key inputs if equal space
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE]:
-                bird.bird_flap()
+        config.ground.update()
 
-            bird.draw(config.window)
-            bird.update(config.ground)
         pygame.display.flip()
-
 
 main()
