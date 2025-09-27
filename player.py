@@ -38,13 +38,13 @@ class Player:
         self.anim_counter = 0   # để đổi frame mỗi vài bước
 
         # physics (giống mono code)
-        self.playerVelY    = -9   # initial vel (mono dùng -9)
+
+        self.playerVelY    = - 9  # initial vel (mono dùng -9)
         self.playerMaxVelY = 10   # max downward speed
         self.playerMinVelY = -8   # max upward speed (cap)
         self.playerAccY    = 1    # gravity (per frame or per second if dt)
         self.playerFlapAcc = -9   # velocity when flap
         self.playerFlapped = False
-
         # trạng thái
         self.alive = True
 
@@ -74,10 +74,8 @@ class Player:
             if pipe.x + pipe.pipe_width >= self.x:
                 next_pipe = pipe
                 break
-
-
         # Gọi agent.act(...) với thông tin hiện tại
-        action = self.brain.act(self.x, self.y, int(self.playerVelY), next_pipe)
+        action = self.brain.act(self.x, self.y, self.playerVelY, next_pipe)
 
         if action == 1:
             self.flap()

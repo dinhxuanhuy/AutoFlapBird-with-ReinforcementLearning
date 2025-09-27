@@ -28,7 +28,7 @@ class Agent(object):
         self.last_state = "0_0_0"   # initial state string
         self.last_action = 0
         self.moves = []   # list of (last_state, last_action, new_state)
-
+        self.max_score = 0
         # ensure dir exists
         d = os.path.dirname(self.path)
         if d and not os.path.exists(d):
@@ -112,7 +112,13 @@ class Agent(object):
         except Exception:
             pass
         return None
-
+    def record_score(self, score):
+        """Ghi nhận điểm số cao nhất (nếu cần)."""
+        if score > self.max_score:
+            self.max_score = score
+            print("You reached new max score:", self.max_score)
+            if score > 100:
+                self.dump_qvalues(force=True)
     # ---------- State / Action ----------
     def get_state(self, x, y, vel, pipe_or_pipes):
         """
@@ -165,8 +171,9 @@ class Agent(object):
         state = self.get_state(x, y, vel, pipe_or_pipes)
 
         # append experience
-        self.moves.append((self.last_state, self.last_action, state))
-
+        self.moves.append((self.last_state, self.last_action, state)) # thêm vào lịch sử di chuyển
+        # mảng move gồm (last_state, last_action, new_state)
+        # ví dụ: ("50_20_3", 0, "40_15_2")
         # maintain qvalues size if needed
         self.save_qvalues()
 
@@ -193,10 +200,13 @@ class Agent(object):
             return
 
         history = list(reversed(self.moves))
-
-        # high_death_flag: giống logic bản gốc (kiểm tra y0 trong new_state string)
+        # mảng move gồm (last_state, last_action, new_state)
+        # ví dụ: ("50_20_3", 0, "40_15_2")
+        # xo yo vel
+        # high_death_flag:
         try:
             high_death_flag = True if int(history[0][2].split("_")[1]) > 120 else False
+            # nếu y0 (khoảng cách dọc tới lỗ hổng) > 120 thì coi như chết cao
         except Exception:
             high_death_flag = False
 
@@ -215,11 +225,12 @@ class Agent(object):
                 pass
 
             # choose reward
-            if t <= 2:
+
+            if t <= 2: # Hai bước cuối cùng trước khi chết luôn bị phạt nặng:
                 cur_reward = self.r[1]
                 if act:
                     last_flap = False
-            elif (last_flap or high_death_flag) and act:
+            elif (last_flap or high_death_flag) and act: # nếu trước đó flap hoặc chết cao và lần này cũng flap -> phạt
                 cur_reward = self.r[1]
                 high_death_flag = False
                 last_flap = False
@@ -237,9 +248,10 @@ class Agent(object):
         self.last_state = "0_0_0"
         self.last_action = 0
 
-    def terminate_game(self):
+    def terminate_game(self,alive=False):
         """Compatibility: gọi khi muốn cập nhật Q và reset (giống bản gốc)."""
-        self.update_scores(died=True)
+        if alive==True:
+            self.update_scores(died=False, printLogs=True)
         self.dump_qvalues(force=True)
 
     # optional helper
