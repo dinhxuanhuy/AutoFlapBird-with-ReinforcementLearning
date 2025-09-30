@@ -119,6 +119,8 @@ class Agent(object):
             print("You reached new max score:", self.max_score)
             if score > 100:
                 self.dump_qvalues(force=True)
+        elif score == self.max_score and score > 10000:
+            self.dump_qvalues(force=True)
     # ---------- State / Action ----------
     def get_state(self, x, y, vel, pipe_or_pipes):
         """

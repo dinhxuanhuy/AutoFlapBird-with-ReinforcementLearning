@@ -91,7 +91,7 @@ def main():
             config.ground.draw(config.window)
             config.ground.update()
             pygame.display.flip()
-            clock.tick(120)
+            clock.tick(config.FPS)
         else:
             # Train không UI: tối ưu tốc độ
             if episode_count % 500 == 0 and episode_count > 0 and (not config.player.alive):
