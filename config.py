@@ -81,7 +81,13 @@ IMAGES['player'] =(
         "data/assets/sprites/redbird-upflap.png",
         "data/assets/sprites/redbird-midflap.png",
         "data/assets/sprites/redbird-downflap.png",
+        "data/assets/sprites/bluebird-upflap.png",
+        "data/assets/sprites/bluebird-midflap.png",
+        "data/assets/sprites/bluebird-downflap.png"
 )
+
+
+
 agent = Agent()
 
 def create_player():
@@ -94,7 +100,19 @@ def create_player():
     else:
         return p(win_width, win_height, images=None )
 
+def create_player2():
+    if TRAINING_MODE != TrainingMode.TRAIN_NOUI:
+        return p(win_width, win_height, images=[
+            pygame.image.load(IMAGES['player'][3]).convert_alpha(),
+            pygame.image.load(IMAGES['player'][4]).convert_alpha(),
+            pygame.image.load(IMAGES['player'][5]).convert_alpha(),
+        ])
+    else:
+        return p(win_width, win_height, images=None )
+
 player = create_player()
+
+player2 = create_player2()
 
 
 def generate_pipe():

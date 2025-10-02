@@ -25,7 +25,7 @@ def quit_game():
                     print("Q-values saved.")
                 pygame.quit()
                 exit()
-            if config.TRAINING_MODE == config.TrainingMode.NORMAL:
+            if config.TRAINING_MODE == config.TrainingMode.NORMAL or config.TRAINING_MODE == config.TrainingMode.TRAIN:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         config.Flap = True
@@ -33,7 +33,7 @@ def quit_game():
 
 def main():
     pipe_spawn_time = 10
-    episode_count = 0
+    episode_count = 0 
 
     while True:
         # Train không UI: bỏ qua xử lý events
@@ -57,6 +57,7 @@ def main():
                 config.pipes.remove(pipe)
 
         # Player logic
+
         if config.player.alive:
             if config.TRAINING_MODE != config.TrainingMode.NORMAL:
                 config.player.think()  # AI hành động
@@ -85,13 +86,29 @@ def main():
                     print(f"Training completed after {episode_count} episodes")
                     config.agent.terminate_game()
                     exit()
+        
+        if config.player2.alive:
+            if config.Flap:
+                config.player2.flap()
+                config.Flap = False
+            config.player2.update()
+            
+            if config.TRAINING_MODE != config.TrainingMode.TRAIN_NOUI:
+                config.player2.draw(config.window)
+        else:
+            print("Player died. AI Wins!")
+            pygame.quit()
+            exit()
 
+        # Kiểm tra va chạm với ống cho cả hai người chơi
+        
+        
         # Rendering (chỉ khi có UI)
         if config.TRAINING_MODE != config.TrainingMode.TRAIN_NOUI:
             config.ground.draw(config.window)
             config.ground.update()
             pygame.display.flip()
-            clock.tick(config.FPS)
+            clock.tick(30)
         else:
             # Train không UI: tối ưu tốc độ
             if episode_count % 500 == 0 and episode_count > 0 and (not config.player.alive):
