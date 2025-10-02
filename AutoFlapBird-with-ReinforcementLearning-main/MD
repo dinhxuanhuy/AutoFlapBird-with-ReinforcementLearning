@@ -1,0 +1,11 @@
+# Train thường có UI
+python main.py --mode train --episodes 1000
+
+# Train không UI (nhanh)
+python main.py --mode noui --episodes 10000 --fps 60
+
+# AI chơi sau khi train
+python main.py --mode ai
+
+# Test với ít episodes
+python main.py --mode noui --episodes 100 --max-score 50
