@@ -3,7 +3,7 @@ from sys import exit
 import config
 import components
 import random
-
+eval_q = []
 # Chỉ khởi tạo pygame khi cần UI4
 print(f"Training mode: {config.TRAINING_MODE}")
 if config.TRAINING_MODE != config.TrainingMode.TRAIN_NOUI:
@@ -30,7 +30,12 @@ def quit_game():
                     if event.key == pygame.K_SPACE:
                         config.Flap = True
 
+import csv
+import pickle
 
+
+    
+            
 def main():
     pipe_spawn_time = 10
     episode_count = 0
@@ -70,11 +75,12 @@ def main():
         else:
             episode_count += 1
             print(f"Episode {episode_count}: Score {config.player.score}")
+            eval_q.append(config.player.score)
             config.agent.update_scores(died=True, printLogs=True)
             if config.TRAINING_MODE != config.TrainingMode.NORMAL:
                 config.agent.record_score(config.player.get_score())
             # Reset game
-
+            
             config.pipes = []
             pipe_spawn_time = 10
             config.player = config.create_player()
@@ -84,6 +90,7 @@ def main():
                 if episode_count >= config.EPISODES:
                     print(f"Training completed after {episode_count} episodes")
                     config.agent.terminate_game()
+                    pickle.dump(eval_q, open("eval_q.pkl", "wb"))
                     exit()
 
         # Rendering (chỉ khi có UI)
@@ -100,6 +107,7 @@ def main():
                 config.agent.dump_qvalues(force=True)
 
             pass
+
 
 
 if __name__ == "__main__":

@@ -58,6 +58,8 @@ class Agent(object):
             except Exception as e:
                 print("Failed saving qvalues:", e)
 
+
+
     def save_qvalues(self):
         """
         Gọi định kỳ để gom trải nghiệm cũ tránh dùng quá nhiều memory.
