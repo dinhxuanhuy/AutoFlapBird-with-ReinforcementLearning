@@ -33,10 +33,17 @@ class GameLoop:
             pipe.update()
             if pipe.offscreen:
                 config.pipes.remove(pipe)
+        if config.player_AI != None:
+            if config.player_AI.alive:
+                config.player_AI.think()
+                config.player_AI.update()
+            else:
+                config.player_AI = None
+                print("AI player died")
 
         # Player update
         if config.player.alive:
-            if config.TRAINING_MODE != config.TrainingMode.NORMAL:
+            if config.TRAINING_MODE != config.TrainingMode.NORMAL and config.TRAINING_MODE != config.TrainingMode.VS:
                 config.player.think()
             else:
                 if config.Flap:
@@ -49,7 +56,7 @@ class GameLoop:
             self.episode_count += 1
             if config.TRAINING_MODE == config.TrainingMode.AI_PLAY:
                 print(f"Episode {self.episode_count}: Score {config.player.score}")
-            config.agent.update_scores(died=True, printLogs=True)
+            #config.agent.update_scores(died=True, printLogs=True)
             if config.TRAINING_MODE != config.TrainingMode.NORMAL:
                 config.agent.record_score(config.player.get_score())
 
@@ -65,6 +72,8 @@ class GameLoop:
         config.ground.update()
 
         config.player.draw(config.window)
+        if config.player_AI != None:
+            config.player_AI.draw(config.window)
 
         config.draw_score(config.window, config.player.get_score())
 

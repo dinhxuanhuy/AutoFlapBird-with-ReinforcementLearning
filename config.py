@@ -12,6 +12,7 @@ import os
 class TrainingMode:
     NORMAL = "normal"      # Chơi thường có UI
     TRAIN = "train"        # Train có UI
+    VS = "pva"         # AI vs Player
     TRAIN_NOUI = "noui"    # Train không UI
     AI_PLAY = "ai"         # AI chơi có UI
 
@@ -35,6 +36,8 @@ EPISODES = args.episodes
 FPS = args.fps
 MAX_SCORE = args.max_score
 
+"""win_height = 512
+win_width = 288"""
 win_height = 512
 win_width = 288
 # amount by which base can maximum shift to left
@@ -79,10 +82,15 @@ if TRAINING_MODE != TrainingMode.TRAIN_NOUI:
 else:
     IMAGES["pipe"] = pygame.image.load("data/assets/sprites/pipe-green.png")
 pipes = []
-IMAGES['player'] = [
+IMAGES['player_red'] = [
     pygame.image.load("data/assets/sprites/redbird-upflap.png").convert_alpha(),
     pygame.image.load("data/assets/sprites/redbird-midflap.png").convert_alpha(),
-    pygame.image.load("data/assets/sprites/redbird-downflap.png").convert_alpha(),
+    pygame.image.load("data/assets/sprites/redbird-downflap.png").convert_alpha()
+]
+IMAGES['player_blue'] = [
+    pygame.image.load("data/assets/sprites/bluebird-upflap.png").convert_alpha(),
+    pygame.image.load("data/assets/sprites/bluebird-midflap.png").convert_alpha(),
+    pygame.image.load("data/assets/sprites/bluebird-downflap.png").convert_alpha(),
 ]
 agent = Agent()
 
@@ -90,17 +98,27 @@ def create_player():
     """Instantiate Player with loaded sprites (in UI) or None (noui)."""
     from player import Player  # local import to avoid circular dependency
     if TRAINING_MODE != TrainingMode.TRAIN_NOUI:
-        return Player(win_width, win_height, images=IMAGES['player'])
+        return Player(win_width, win_height, images=IMAGES['player_red'])
+    else:
+        return Player(win_width, win_height, images=None)
+def create_player_ai():
+    """Instantiate Player with loaded sprites (in UI) or None (noui)."""
+    from player import Player  # local import to avoid circular dependency
+    if TRAINING_MODE != TrainingMode.TRAIN_NOUI:
+        return Player(win_width, win_height, images=IMAGES['player_blue'])
     else:
         return Player(win_width, win_height, images=None)
 
 
-player = create_player()
+player = create_player() # AI player
+player_AI = None
+if TRAINING_MODE == TrainingMode.VS:
+    player_AI = create_player_ai() # AI player
 
 
 
 def generate_pipe():
-    speed = 2 if TRAINING_MODE == TrainingMode.NORMAL else 4
+    speed = 4 if TRAINING_MODE == TrainingMode.NORMAL else 4
 
 
 

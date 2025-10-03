@@ -3,6 +3,32 @@ import pygame
 
 from game_loop import GameLoop
 
+def run_ai_vs_player():
+    loop = GameLoop()
+    loop.reset()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
+
+            elif event.type == pygame.KEYDOWN and event.key in (pygame.K_SPACE, pygame.K_UP):
+                if not loop.game_over:          # chỉ flap khi còn sống
+                    config.Flap = True
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if loop.game_over:
+                    # click nút trên overlay
+                    if loop.retry_rect and loop.retry_rect.collidepoint(event.pos):
+                        loop.reset()
+                    elif loop.home_rect and loop.home_rect.collidepoint(event.pos):
+                        return
+                else:
+                    # click để flap khi đang chơi
+                    config.Flap = True
+
+        loop.step()
+        loop.render()
+
 
 def run_ai_play():
     loop = GameLoop()
@@ -17,7 +43,6 @@ def run_ai_play():
 def run_people_play():
     loop = GameLoop()
     loop.reset()
-
     while True:
         # CHỈ MỘT event loop
         for event in pygame.event.get():

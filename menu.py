@@ -18,7 +18,7 @@ def _spawn_pipe_every(frames_until_spawn):
     return frames_until_spawn - 1
 
 
-def menu():
+def     menu():
     """Main menu loop. Shows animated background and four options.
     Returns: one of ("ai play", "people play", "train", "quit")
     """
@@ -77,7 +77,7 @@ def menu():
             if anim_counter % 3 == 0:  # đổi frame nhanh (mỗi 3 ticks)
                 playerIndex = next(playerIndexGen)
 
-            bird_img = config.IMAGES["player"][playerIndex]
+            bird_img = config.IMAGES["player_red"][playerIndex]
             bird_rect = bird_img.get_rect(center=(config.win_width // 2, rect.bottom + 30))  # cách title 30px
             screen.blit(bird_img, bird_rect)
 
