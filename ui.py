@@ -1,7 +1,6 @@
 import pygame
 import config
 
-
 class UIOverlay:
     def draw_game_over(self):
         overlay = pygame.Surface((config.win_width, config.win_height), pygame.SRCALPHA)
@@ -16,7 +15,6 @@ class UIOverlay:
         panel_rect = panel.get_rect(center=(config.win_width // 2, 260))
         config.window.blit(panel, panel_rect)
 
-        # Score bằng ảnh số
         digits = list(str(config.player.get_score()))
         num_images = [config.IMAGES["numbers"][int(d)] for d in digits]
         total_width = sum(img.get_width() for img in num_images)

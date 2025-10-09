@@ -6,16 +6,13 @@ from agent import Agent
 # Thêm vào đầu file config.py
 import argparse
 import sys
-
 import os
-# Training modes
 class TrainingMode:
     NORMAL = "normal"      # Chơi thường có UI
     TRAIN = "train"        # Train có UI
     VS = "pva"         # AI vs Player
     TRAIN_NOUI = "noui"    # Train không UI
     AI_PLAY = "ai"         # AI chơi có UI
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Flappy Bird Q-Learning')
@@ -64,8 +61,6 @@ background = components.Background(win_width, win_height)
 if TRAINING_MODE != TrainingMode.TRAIN_NOUI:
     background.set_img(IMAGES["background"])
 
-
-
 if TRAINING_MODE != TrainingMode.TRAIN_NOUI:
     IMAGES["base"] = pygame.transform.scale(
         pygame.image.load("data/assets/sprites/base.png").convert_alpha(),
@@ -109,19 +104,14 @@ def create_player_ai():
     else:
         return Player(win_width, win_height, images=None)
 
-
 player = create_player() # AI player
 player_AI = None
 if TRAINING_MODE == TrainingMode.VS:
     player_AI = create_player_ai() # AI player
 
-
-
+# chinh speed
 def generate_pipe():
     speed = 4 if TRAINING_MODE == TrainingMode.NORMAL else 4
-
-
-
 
     pipe = components.Pipe(win_width, win_height, img=IMAGES["pipe"], gap_size=100, speed=speed)
     pipes.append(pipe)
@@ -153,12 +143,6 @@ if TRAINING_MODE != TrainingMode.TRAIN_NOUI:
     SOUNDS["swoosh"] = _load_sound("swoosh")
     SOUNDS["wing"] = _load_sound("wing")
 
-
-
-
-
-
-
 def play_sound(key: str):
     if TRAINING_MODE == TrainingMode.TRAIN_NOUI:
         return
@@ -179,21 +163,16 @@ IMAGES["numbers"] = [
     pygame.image.load("data/assets/sprites/9.png").convert_alpha(),
 ]
 
-
 def draw_score(surface, score: int, y: int = 40):
     if TRAINING_MODE == TrainingMode.TRAIN_NOUI:
         return
-
     digits = list(str(score))
     num_images = [IMAGES["numbers"][int(d)] for d in digits]
-
     total_width = sum(img.get_width() for img in num_images)
     start_x = (win_width - total_width) // 2
     for img in num_images:
         surface.blit(img, (start_x, y))
         start_x += img.get_width()
-
-
 
 ##GIA VI
 IMAGES["title"] = pygame.image.load("data/assets/sprites/title.png").convert_alpha()
@@ -201,14 +180,10 @@ IMAGES["gameover"] = pygame.image.load("data/assets/sprites/gameover.png").conve
 IMAGES["score_panel"] = pygame.image.load("data/assets/sprites/score_panel.png").convert_alpha()
 IMAGES["button_retry"] = pygame.image.load("data/assets/sprites/button_retry.png").convert_alpha()
 IMAGES["button_home"] = pygame.image.load("data/assets/sprites/button_homet.png").convert_alpha()
-
-
 IMAGES["btn_ai"] = pygame.image.load("data/assets/sprites/AI_Play.png").convert_alpha()
 IMAGES["btn_human"] = pygame.image.load("data/assets/sprites/Human_Play.png").convert_alpha()
 IMAGES["btn_train"] = pygame.image.load("data/assets/sprites/Train.png").convert_alpha()
 IMAGES["btn_quit"] = pygame.image.load("data/assets/sprites/Quit.png").convert_alpha()
-
-
 IMAGES["author"] = pygame.image.load("data/assets/sprites/author.png").convert_alpha()
-
 IMAGES["btn_pva"] = pygame.image.load("data/assets/sprites/P_V_A.png").convert_alpha()
+IMAGES["getready"] = pygame.image.load("data/assets/sprites/getready.png").convert_alpha()

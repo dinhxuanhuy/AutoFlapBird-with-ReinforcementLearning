@@ -4,6 +4,7 @@ import components
 import random
 import config
 from agent import Agent
+
 base_y = int(512* 0.79)
 class Player:
     """

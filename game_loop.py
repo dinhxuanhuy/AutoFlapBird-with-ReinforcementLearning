@@ -3,7 +3,6 @@ import time
 import config
 from ui import UIOverlay
 
-
 class GameLoop:
     def __init__(self):
         self.clock = pygame.time.Clock()
@@ -63,25 +62,20 @@ class GameLoop:
     def render(self):
         if config.TRAINING_MODE == config.TrainingMode.TRAIN_NOUI:
             return
-
         config.window.fill((0, 0, 0))
         config.background.draw(config.window)
         for pipe in config.pipes:
             pipe.draw(config.window)
         config.ground.draw(config.window)
         config.ground.update()
-
         config.player.draw(config.window)
         if config.player_AI != None:
             config.player_AI.draw(config.window)
-
         config.draw_score(config.window, config.player.get_score())
-
         if self.game_over and config.TRAINING_MODE == config.TrainingMode.NORMAL:
             self.retry_rect, self.home_rect = self.ui_overlay.draw_game_over()
         else:
             self.retry_rect, self.home_rect = None, None
-
         pygame.display.flip()
         self.clock.tick(config.FPS)
 

@@ -2,7 +2,7 @@ import sys
 import pygame
 import config
 import menu
-from FlappyBird.config import player
+from config import player
 from modes import run_ai_play, run_people_play, run_train_info , run_ai_vs_player
 
 if __name__ == "__main__":
