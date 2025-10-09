@@ -3,7 +3,13 @@ from sys import exit
 import config
 import components
 import random
-eval_q = []
+import csv
+import pickle
+
+try:
+    eval_q = pickle.load(open("eval_q_new.pkl", "rb"))
+except:
+    eval_q = []
 # Chỉ khởi tạo pygame khi cần UI4
 print(f"Training mode: {config.TRAINING_MODE}")
 if config.TRAINING_MODE != config.TrainingMode.TRAIN_NOUI:
@@ -14,6 +20,8 @@ else:
     import time
 
     start_time = time.time()
+
+#cộng dồn điểm cho agent vô pickle
 
 
 def quit_game():
@@ -30,8 +38,7 @@ def quit_game():
                     if event.key == pygame.K_SPACE:
                         config.Flap = True
 
-import csv
-import pickle
+
 
 
     
@@ -84,13 +91,14 @@ def main():
             config.pipes = []
             pipe_spawn_time = 10
             config.player = config.create_player()
+            pickle.dump(eval_q, open("eval_q_new.pkl", "wb"))
 
             # Kiểm tra điều kiện dừng
             if config.TRAINING_MODE == config.TrainingMode.TRAIN_NOUI:
                 if episode_count >= config.EPISODES:
                     print(f"Training completed after {episode_count} episodes")
                     config.agent.terminate_game()
-                    pickle.dump(eval_q, open("eval_q.pkl", "wb"))
+
                     exit()
 
         # Rendering (chỉ khi có UI)
